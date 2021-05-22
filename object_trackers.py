@@ -19,7 +19,7 @@ class SingleObjectTracker:
         estimates = []
 
         for i in range(N):
-            z_ingate, meas_in_gate = self.density.ellips_gating(state, Z[i])
+            z_ingate = self.density.ellips_gating(state, Z[i])
 
             if z_ingate.size:
                 likelihood = self.density.pred_likelihood(state, z_ingate)
@@ -41,7 +41,7 @@ class SingleObjectTracker:
         estimates = []
 
         for i in range(N):
-            z_ingate, meas_in_gate = self.density.ellips_gating(state, Z[i])
+            z_ingate = self.density.ellips_gating(state, Z[i])
             preds = self.density.pred_likelihood(state, z_ingate) if z_ingate.size else np.array([])
             m = preds.size
             w = np.zeros(m + 1)
@@ -77,7 +77,7 @@ class SingleObjectTracker:
             hyp_h = []
 
             for i in range(H):
-                z_ingate, meas_in_gate = self.density.ellips_gating(hyp[i], Z[k])
+                z_ingate = self.density.ellips_gating(hyp[i], Z[k])
                 preds = self.density.pred_likelihood(hyp[i], z_ingate) if z_ingate.size else np.array([])
                 m = preds.size
                 w_h.append(w[i] + np.log(1 - P_D))

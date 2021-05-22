@@ -13,7 +13,6 @@ class GaussianDensity:
 
 	def predict(self, state):
 		F = self.motion_model.F(state.x)
-		state.x = self.motion_model.f(state.x)
 		x = self.motion_model.f(state.x)
 		P = np.dot(np.dot(F, state.P), F.T) + self.motion_model.Q
 		return State(x, P)
@@ -33,7 +32,6 @@ class GaussianDensity:
 		n, m = z.shape
 		mean = self.meas_model.h(state.x)
 		z_ingate = []
-		meas_in_gate = [True] * m
 
 		H = self.meas_model.H(state.x)
 		S =	np.dot(np.dot(H, state.P), H.T) + self.meas_model.R
@@ -43,12 +41,10 @@ class GaussianDensity:
 		for i in range(m):
 			dz = z[:,i] - mean
 
-			if np.dot(np.dot(dz, S_inv), dz) > self.gating:
-				meas_in_gate[i] = False
-			else:
+			if np.dot(np.dot(dz, S_inv), dz) <= self.gating:
 				z_ingate.append(z[:,i])
 
-		return np.array(z_ingate).T, meas_in_gate
+		return np.array(z_ingate).T
 
 	def pred_likelihood(self, state, z_ingate):
 		mean = self.meas_model.h(state.x)
